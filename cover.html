@@ -46,15 +46,20 @@
         .logo {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #3498db, #2980b9);
+            background: white;
             border-radius: 20px;
             margin: 0 auto 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 2rem;
-            font-weight: 300;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #f0f0f0;
+        }
+
+        .logo img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
         }
 
         h1 {
@@ -181,7 +186,9 @@
 </head>
 <body>
     <div class="cover-container">
-        <div class="logo">SVD</div>
+        <div class="logo">
+            <img src="xdu.svg" alt="XDU Logo">
+        </div>
         <h1>SVD图像压缩演示</h1>
         <p class="subtitle">请输入访问密码以继续</p>
         

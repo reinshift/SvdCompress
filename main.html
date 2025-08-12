@@ -13,6 +13,21 @@
     </script>
 </head>
 <body>
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <a href="main.html" class="nav-logo">
+                <img src="xdu.svg" alt="XDU Logo" style="width: 24px; height: 24px; margin-right: 8px; vertical-align: middle;">
+                SVD图像压缩
+            </a>
+            <div class="nav-links">
+                <a href="main.html" class="nav-link active">压缩演示</a>
+                <a href="theory.html" class="nav-link">算法原理</a>
+                <button class="logout-btn" onclick="logout()">退出</button>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <header>
             <div class="header-content">
@@ -20,7 +35,6 @@
                     <h1>SVD图像压缩演示</h1>
                     <p>基于奇异值分解(SVD)的图像压缩原理演示</p>
                 </div>
-                <button class="logout-btn" onclick="logout()">退出</button>
             </div>
         </header>
 

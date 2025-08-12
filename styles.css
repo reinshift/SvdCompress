@@ -18,6 +18,63 @@ body {
     padding: 20px;
 }
 
+/* 导航栏样式 */
+.nav-bar {
+    background: white;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo:hover {
+    color: #3498db;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-link {
+    color: #7f8c8d;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+.nav-link:hover {
+    color: #3498db;
+    background: #f8f9fa;
+}
+
+.nav-link.active {
+    color: #3498db;
+    font-weight: 600;
+    background: #e3f2fd;
+}
+
 /* 头部样式 */
 header {
     margin-bottom: 30px;
@@ -65,6 +122,11 @@ header {
 .logout-btn:hover {
     background: #c0392b;
     transform: translateY(-1px);
+}
+
+/* 导航栏中的退出按钮 */
+.nav-links .logout-btn {
+    margin-left: 10px;
 }
 
 /* 主要内容区域 */
@@ -472,19 +534,31 @@ footer {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+    .nav-content {
+        flex-direction: column;
+        gap: 15px;
+        padding: 0 15px;
+    }
+
+    .nav-links {
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
     .main-content {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
-    header h1 {
+
+    .header-text h1 {
         font-size: 2rem;
     }
-    
+
     .examples-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .image-info {
         grid-template-columns: 1fr;
     }
