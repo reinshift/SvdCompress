@@ -36,7 +36,13 @@ A_k = U_k Σ_k V_k^T
 
 ## 使用方法
 
-### 1. 本地运行
+### 1. 访问演示
+- **访问密码**: `xdugaodai`
+- 首次访问会显示密码验证页面
+- 输入正确密码后进入主演示界面
+- 会话期间无需重复输入密码
+
+### 2. 本地运行
 ```bash
 # 克隆项目
 git clone [your-repo-url]
@@ -52,11 +58,12 @@ npx serve .
 # 方法3: 使用Live Server (VS Code扩展)
 ```
 
-### 2. GitHub Pages部署
+### 3. GitHub Pages部署
 1. 将代码推送到GitHub仓库
 2. 在仓库设置中启用GitHub Pages
 3. 选择主分支作为源
 4. 访问 `https://[username].github.io/[repository-name]`
+5. 输入密码 `xdugaodai` 进入演示
 
 ### 3. 生成示例图片
 1. 打开 `generate_images.html`
@@ -68,16 +75,18 @@ npx serve .
 
 ```
 ImageCompress_fix/
-├── index.html              # 主页面
+├── index.html              # 入口页面（重定向到封面）
+├── cover.html              # 密码验证封面页面
+├── main.html               # 主演示页面
 ├── styles.css              # 样式文件
 ├── script.js               # 主要交互逻辑
 ├── svd.js                  # SVD算法实现
 ├── generate_images.html    # 示例图片生成器
 ├── images/                 # 示例图片目录
-│   ├── lena.jpg
-│   ├── cameraman.jpg
-│   ├── peppers.jpg
-│   └── barbara.jpg
+│   ├── gray.jpg
+│   ├── xidian.jpg
+│   ├── 学校图片.jpg
+│   └── 风景1.jpg
 └── README.md              # 说明文档
 ```
 

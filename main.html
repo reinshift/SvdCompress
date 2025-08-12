@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD图像压缩演示</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // 检查访问权限
+        if (sessionStorage.getItem('svd_authenticated') !== 'true') {
+            window.location.href = 'cover.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="header-text">
+                    <h1>SVD图像压缩演示</h1>
+                    <p>基于奇异值分解(SVD)的图像压缩原理演示</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">退出</button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- 左侧区域 -->
+            <div class="left-panel">
+                <!-- 上半部分：图片上传和控制 -->
+                <div class="upload-section">
+                    <h2>图像压缩</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-placeholder">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                <polyline points="21,15 16,10 5,21"/>
+                            </svg>
+                            <p>点击上传图片或拖拽图片到此处</p>
+                            <input type="file" id="imageInput" accept="image/*" hidden>
+                        </div>
+                        <canvas id="originalCanvas" style="display: none;"></canvas>
+                    </div>
+
+                    <div class="controls">
+                        <div class="mode-toggle">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="modeToggle">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-text">按百分比保留</span>
+                            </label>
+                        </div>
+                        <div class="slider-container">
+                            <label for="singularValues" id="sliderLabel">保留奇异值数量: <span id="svdValue">50</span></label>
+                            <input type="range" id="singularValues" min="1" max="100" value="50" disabled>
+                        </div>
+                        <button id="compressBtn" disabled>开始压缩</button>
+                        <div class="progress-container" id="progressContainer">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-text" id="progressText">正在处理...</div>
+                        </div>
+                    </div>
+
+                    <div class="image-info">
+                        <div class="info-item">
+                            <span>图像类型:</span>
+                            <span id="imageType">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span>图像尺寸:</span>
+                            <span id="imageDimensions">-</span>
+                        </div>
+                        <div class="info-item" title="压缩比计算公式：原始数据量 / 压缩后数据量&#10;原始: m×n×通道数&#10;压缩后: k×(m+n+1)×通道数&#10;其中 k 为保留的奇异值数量">
+                            <span>压缩比:</span>
+                            <span id="compressionRatio">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 下半部分：压缩后的图片 -->
+                <div class="result-section">
+                    <h2>压缩结果</h2>
+                    <div class="result-area">
+                        <canvas id="compressedCanvas"></canvas>
+                        <div class="result-placeholder" id="resultPlaceholder">
+                            <p>压缩后的图像将显示在这里</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧区域 -->
+            <div class="right-panel">
+                <!-- 上半部分：数据看板 -->
+                <div class="dashboard-section">
+                    <h2>压缩比分析</h2>
+                    <div class="chart-container">
+                        <canvas id="chartCanvas" width="400" height="300"></canvas>
+                        <div class="chart-placeholder" id="chartPlaceholder">
+                            <p>调整滑块查看压缩比变化</p>
+                        </div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-color" style="background-color: #4CAF50;"></span>
+                            <span>压缩比</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 下半部分：示例图片选择 -->
+                <div class="examples-section">
+                    <h2>示例图片</h2>
+                    <div class="examples-grid" id="examplesGrid">
+                        <div class="example-item" data-src="images/gray.jpg">
+                            <img src="images/gray.jpg" alt="Gray" onerror="this.style.display='none'">
+                            <span>Gray</span>
+                        </div>
+                        <div class="example-item" data-src="images/xidian.jpg">
+                            <img src="images/xidian.jpg" alt="Xidian" onerror="this.style.display='none'">
+                            <span>Xidian</span>
+                        </div>
+                        <div class="example-item" data-src="images/学校图片.jpg">
+                            <img src="images/学校图片.jpg" alt="学校图片" onerror="this.style.display='none'">
+                            <span>学校图片</span>
+                        </div>
+                        <div class="example-item" data-src="images/风景1.jpg">
+                            <img src="images/风景1.jpg" alt="风景1" onerror="this.style.display='none'">
+                            <span>风景1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>SVD图像压缩原理：通过保留最大的k个奇异值来近似原始图像矩阵</p>
+        </footer>
+    </div>
+
+    <script src="svd.js"></script>
+    <script src="script.js"></script>
+    <script>
+        function logout() {
+            if (confirm('确定要退出吗？')) {
+                sessionStorage.removeItem('svd_authenticated');
+                window.location.href = 'cover.html';
+            }
+        }
+    </script>
+</body>
+</html>

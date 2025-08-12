@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVD图像压缩演示 - 访问验证</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .cover-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 60px 50px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border-radius: 20px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .password-form {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        .footer-text {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .cover-container {
+                padding: 40px 30px;
+                margin: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .submit-btn.loading {
+            pointer-events: none;
+        }
+
+        .submit-btn.loading .loading {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="cover-container">
+        <div class="logo">SVD</div>
+        <h1>SVD图像压缩演示</h1>
+        <p class="subtitle">请输入访问密码以继续</p>
+        
+        <form class="password-form" id="passwordForm">
+            <div class="input-group">
+                <input 
+                    type="password" 
+                    class="password-input" 
+                    id="passwordInput" 
+                    placeholder="请输入密码"
+                    autocomplete="off"
+                >
+            </div>
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="loading"></span>
+                <span class="btn-text">进入演示</span>
+            </button>
+            <div class="error-message" id="errorMessage">密码错误，请重试</div>
+        </form>
+        
+        <p class="footer-text">基于奇异值分解的图像压缩原理演示</p>
+    </div>
+
+    <script>
+        const PASSWORD = 'xdugaodai';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('passwordForm');
+            const passwordInput = document.getElementById('passwordInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+
+            // 检查是否已经验证过
+            if (sessionStorage.getItem('svd_authenticated') === 'true') {
+                window.location.href = 'main.html';
+                return;
+            }
+
+            // 自动聚焦到密码输入框
+            passwordInput.focus();
+
+            // 表单提交事件
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const password = passwordInput.value.trim();
+                
+                if (!password) {
+                    showError('请输入密码');
+                    return;
+                }
+
+                // 显示加载状态
+                showLoading();
+
+                // 模拟验证延迟
+                setTimeout(() => {
+                    if (password === PASSWORD) {
+                        // 密码正确
+                        sessionStorage.setItem('svd_authenticated', 'true');
+                        btnText.textContent = '验证成功';
+                        
+                        setTimeout(() => {
+                            window.location.href = 'main.html';
+                        }, 500);
+                    } else {
+                        // 密码错误
+                        hideLoading();
+                        showError('密码错误，请重试');
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                    }
+                }, 800);
+            });
+
+            // 输入时隐藏错误信息
+            passwordInput.addEventListener('input', function() {
+                hideError();
+            });
+
+            // Enter键提交
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    form.dispatchEvent(new Event('submit'));
+                }
+            });
+
+            function showLoading() {
+                submitBtn.classList.add('loading');
+                btnText.textContent = '验证中...';
+                passwordInput.disabled = true;
+            }
+
+            function hideLoading() {
+                submitBtn.classList.remove('loading');
+                btnText.textContent = '进入演示';
+                passwordInput.disabled = false;
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.add('show');
+            }
+
+            function hideError() {
+                errorMessage.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
